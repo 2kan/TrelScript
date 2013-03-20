@@ -3,6 +3,8 @@ Trel Script
 
 Trel Script is a scripting language in which the syntax is based on the way in which the master trel of 2012 speaks.
 
+If you want to learn how to code in trelscript, have a look at the specification in the documentation folder. You will need to implement the interpreter into your code (which will be easier to do in the future), or make your own,
+
 
 I want to help
 --
