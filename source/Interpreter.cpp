@@ -28,7 +28,7 @@ Interpreter::Interpreter()
 
 Interpreter::~Interpreter()
 {
-	delete[] scope;
+	delete[] *scope;
 }
 
 int Interpreter::interpretLine(Line &l)
@@ -38,6 +38,13 @@ int Interpreter::interpretLine(Line &l)
 	 *			Same thing as "echo"
 	 *		potato <name> is <value>
 	 *			Creates a variable called <name> with value <value>
+	 *		ham barf
+	 *			Pushes a new scope
+	 *		ham eat
+	 *			Pops the scope
+	 *
+	 *
+	 *
 	 */
 
 	if(lineNumber == 1)
@@ -52,13 +59,9 @@ int Interpreter::interpretLine(Line &l)
 	// Only interpret the line if it isn't a comment
 	if(l.line[0] != '#')
 	{
-		// Get all the variables in the current scope, and the scopes below it
-		/*Scope *usableVars	= new Scope(-1);
-		getScopedVars(usableVars);*/
-
 		parseVarNames(l);
-
-		if(l.line == "divide by zero")
+		
+		if(l.words[0] == "divide" && l.words[1] == "by" && l.words[2] == "zero")
 		{
 			return 0;
 		}
@@ -131,7 +134,6 @@ void Interpreter::parseVarNames(Line &l)
 string Interpreter::getVarValue(string varName)
 {
 	string at	= "@";
-	int numChars	= varName.size();
 
 	for(int i=0; i<=curScope; ++i)
 	{
@@ -173,6 +175,9 @@ void Interpreter::createNewScope()
 
 void Interpreter::destroyScope()
 {
-	delete scope[curScope];
-	--curScope;
+	if(curScope > 0)
+	{
+		//delete scope[curScope];
+		--curScope;
+	}
 }
