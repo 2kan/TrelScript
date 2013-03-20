@@ -13,8 +13,8 @@ public:
 	~Scope();
 
 	Var *vars;
+	int varCount;
 	unsigned int id;
-	unsigned int varCount;
 };
 
 #endif // __SCOPE_H__
