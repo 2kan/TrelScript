@@ -26,7 +26,7 @@ bool Script::executeScript()
 	if(m_filepath != "{{use default}}")
 	{
 		// Open the file
-		m_file.open(m_filepath);
+		m_file.open(m_filepath.c_str());
 		std::string line;
 
 		// If it opened okay
@@ -41,9 +41,12 @@ bool Script::executeScript()
 				Line l1;
 				l1.setLine(line);
 
-				// If the interpreter returns zero, exit the program (means a call to "divide by zero")
-				if(interpreter->interpretLine(l1) == 0)
-					break;
+				if(line != "") // Don't waste time
+				{
+					// If the interpreter returns zero, exit the program (means a call to "divide by zero")
+					if(interpreter->interpretLine(l1) == 0)
+						break;
+				}
 			}
 		}
 		else
