@@ -6,7 +6,7 @@ class Var
 public:
 	std::string name, value;
 
-	Var::Var()
+	Var()
 	{
 		name	= "";
 		value	= "";
