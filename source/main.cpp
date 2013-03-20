@@ -7,8 +7,9 @@
 ///////////////////////////////////////////////////////////
 int main()
 {
-	TrelScript *ts	= new TrelScript();
+	TrelScript *ts	= new TrelScript("testfile.trole");
 	ts->runScript();
+	delete ts;
 
 	system("pause");
 	return 0;
