@@ -17,13 +17,13 @@ TrelScript::TrelScript(std::string a_filepath)
 
 TrelScript::~TrelScript()
 {
-	std::cout << "Execution complete.";
+	std::cout << "Execution complete.\n";
 }
 
 void TrelScript::setInfo()
 {
 	m_name		= "Trel Script";
-	m_version	= "0.2.5";
+	m_version	= "0.2.6";
 }
 
 void TrelScript::runScript()
