@@ -22,6 +22,7 @@ public:
 private:
 	void parseVarNames(Line&);
 	std::string getVarValue(std::string);
+	std::string setVar(Line);
 	void showDebugInfo(std::string);
 	void getScopedVars(Scope*);
 	void createNewScope();

@@ -38,6 +38,8 @@ int Interpreter::interpretLine(Line &l)
 	 *			Same thing as "echo"
 	 *		potato <name> is <value>
 	 *			Creates a variable called <name> with value <value>
+	 *		potato <name> is num <num1> add <num2>
+	 *			Creates a variable called <name> with the value of <num1> and <num2> added together
 	 *		ham barf
 	 *			Pushes a new scope
 	 *		ham eat
@@ -46,6 +48,8 @@ int Interpreter::interpretLine(Line &l)
 	 *
 	 *
 	 */
+
+	++lineNumber;
 
 	if(lineNumber == 1)
 	{
@@ -99,7 +103,7 @@ int Interpreter::interpretLine(Line &l)
 					// If variable already exists, update the value
 					if(l.words[1] == scope[i]->vars[k].name)
 					{
-						scope[i]->vars[k].value	= l.words[3];
+						scope[i]->vars[k].value	= setVar(l);
 						showDebugInfo("Updated variable '" + scope[i]->vars[k].name + "'to new value '" + scope[i]->vars[k].value);
 						varExists	= true;
 					}
@@ -110,7 +114,7 @@ int Interpreter::interpretLine(Line &l)
 			{
 				int vcount	= scope[curScope]->varCount;
 				scope[curScope]->vars[vcount].name	= l.words[1];
-				scope[curScope]->vars[vcount].value	= l.words[3];
+				scope[curScope]->vars[vcount].value	= setVar(l);
 				showDebugInfo("Created variable '" + scope[curScope]->vars[vcount].name + "' with value '" + scope[curScope]->vars[vcount].value + "'");
 				++scope[curScope]->varCount;
 			}
@@ -145,6 +149,22 @@ string Interpreter::getVarValue(string varName)
 	}
 
 	return "";
+}
+
+string Interpreter::setVar(Line a_l)
+{
+	if(a_l.numWords == 7 && a_l.words[3] == "num")
+	{
+		char buffer[16];
+		if(a_l.words[5] == "add")
+			itoa((atoi(a_l.words[4].c_str()) + atoi(a_l.words[6].c_str())), buffer, 10);
+
+		return string(buffer);
+	}
+	else
+	{
+		return a_l.words[3];
+	}
 }
 
 void Interpreter::showDebugInfo(string a_info)
