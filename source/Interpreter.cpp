@@ -156,8 +156,17 @@ string Interpreter::setVar(Line a_l)
 	if(a_l.numWords == 7 && a_l.words[3] == "num")
 	{
 		char buffer[16];
+		int lhs	= atoi(a_l.words[4].c_str());
+		int rhs	= atoi(a_l.words[6].c_str());
+		
 		if(a_l.words[5] == "add")
-			itoa((atoi(a_l.words[4].c_str()) + atoi(a_l.words[6].c_str())), buffer, 10);
+			itoa((lhs + rhs), buffer, 10);
+		else if(a_l.words[5] == "sub")
+			itoa((lhs - rhs), buffer, 10);
+		else if(a_l.words[5] == "mul")
+			itoa((lhs * rhs), buffer, 10);
+		else if(a_l.words[5] == "div")
+			itoa((lhs / rhs), buffer, 10);
 
 		return string(buffer);
 	}
