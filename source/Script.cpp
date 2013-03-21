@@ -39,7 +39,7 @@ bool Script::executeScript()
 				line.clear();
 				getline(m_file, line);
 				Line l1;
-				l1.setLine(line);
+				l1.setLine(line + '\0');
 
 				if(line != "") // Don't waste time
 				{
