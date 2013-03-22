@@ -14,6 +14,7 @@ Interpreter::Interpreter()
 	varCounter	= 0;
 	lineNumber	= 0;
 	debugMode	= false;
+	runNextLine	= true;
 
 
 	// System scope
@@ -44,11 +45,12 @@ int Interpreter::interpretLine(Line &l)
 	 *			Pushes a new scope
 	 *		ham eat
 	 *			Pops the scope
-	 *
+	 *		same <var1> is <var2>
+	 *			If <var1> is the same as <var2>, run the next line. If not, skip it. If the next line is a comment, then the comment is skipped and the line after is run
 	 *
 	 *
 	 */
-
+	bool interpreted	= false;
 	++lineNumber;
 
 	if(lineNumber == 1)
@@ -61,7 +63,7 @@ int Interpreter::interpretLine(Line &l)
 	}
 
 	// Only interpret the line if it isn't a comment
-	if(l.line[0] != '#')
+	if(l.line[0] != '#' && runNextLine)
 	{
 		parseVarNames(l);
 		
@@ -119,6 +121,20 @@ int Interpreter::interpretLine(Line &l)
 				++scope[curScope]->varCount;
 			}
 		}
+		else if(l.words[0] == "same" && l.numWords >= 3)
+		{
+			if(l.words[1] != l.words[2])
+			{
+				runNextLine	= false;
+			}
+		}
+
+		interpreted	= true;
+	}
+
+	if(!interpreted && !runNextLine && l.line[0] != '#')
+	{
+		runNextLine	= true;
 	}
 
 	return 1;

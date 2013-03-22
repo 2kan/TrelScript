@@ -12,21 +12,22 @@ public:
 	
 	int interpretLine(Line&);
 
-	int maxVars;
-	int varCounter;
-	bool debugMode;
-	Scope *scope[50];
-	int lineNumber;
-	int curScope;
-
 private:
-	void parseVarNames(Line&);
-	std::string getVarValue(std::string);
-	std::string setVar(Line);
-	void showDebugInfo(std::string);
-	void getScopedVars(Scope*);
-	void createNewScope();
-	void destroyScope();
+	void	parseVarNames(Line&);
+	std::string	getVarValue(std::string);
+	std::string	setVar(Line);
+	void	showDebugInfo(std::string);
+	void	getScopedVars(Scope*);
+	void	createNewScope();
+	void	destroyScope();
+
+	int		maxVars;
+	int		varCounter;
+	bool	debugMode;
+	Scope	*scope[50];
+	int		lineNumber;
+	int		curScope;
+	bool	runNextLine;
 };
 
 #endif // __INTERPRETER_H__
