@@ -47,6 +47,8 @@ int Interpreter::interpretLine(Line &l)
 	 *			Pops the scope
 	 *		same <var1> is <var2>
 	 *			If <var1> is the same as <var2>, run the next line. If not, skip it. If the next line is a comment, then the comment is skipped and the line after is run
+	 *		notsame <var1> is <var2>
+	 *			Same as "same <v1> <v2>", except only runs the next line if the two are different
 	 *
 	 *
 	 */
@@ -121,12 +123,12 @@ int Interpreter::interpretLine(Line &l)
 				++scope[curScope]->varCount;
 			}
 		}
-		else if(l.words[0] == "same" && l.numWords >= 3)
+		else if((l.words[0] == "same" || l.words[0] == "notsame") && l.numWords >= 3)
 		{
-			if(l.words[1] != l.words[2])
-			{
+			if(l.words[0] == "same" && l.words[1] != l.words[2])
 				runNextLine	= false;
-			}
+			else if(l.words[0] == "notsame" && l.words[1] == l.words[2])
+				runNextLine	= false;
 		}
 
 		interpreted	= true;
