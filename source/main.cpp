@@ -11,6 +11,6 @@ int main()
 	ts->runScript();
 	delete ts;
 
-	system("pause");
+	std::cin.get();
 	return 0;
 }
