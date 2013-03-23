@@ -2,7 +2,9 @@
 #define __SCRIPT_H__
 
 #include <fstream>
-#include "Interpreter.h"
+class Interpreter;
+class Function;
+class Line;
 
 class Script
 {
@@ -14,13 +16,21 @@ public:
 	bool executeScript();
 
 private:
-	Interpreter *interpreter;
-	bool openScript();
+	bool	openScript();
+	void		getLineCount();
+	void	setFunctions();
+	void	getLines();
 
-	std::ifstream m_file;
-	std::string m_filepath;
-	std::string m_line;
-	int lineNumber;
+	Interpreter *interpreter;
+	Function	*functions;
+	Line		*lines;
+
+	std::ifstream	m_file;
+	std::string		m_filepath;
+	std::string		m_line;
+	int	m_lineNumber;
+	int	m_numberOfLines;
+	int m_numberOfFunctions;
 };
 
 #endif // __SCRIPT_H__
