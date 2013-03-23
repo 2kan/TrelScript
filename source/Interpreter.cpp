@@ -49,7 +49,10 @@ int Interpreter::interpretLine(Line &l)
 	 *			If <var1> is the same as <var2>, run the next line. If not, skip it. If the next line is a comment, then the comment is skipped and the line after is run
 	 *		notsame <var1> is <var2>
 	 *			Same as "same <v1> <v2>", except only runs the next line if the two are different
-	 *
+	 *		spud <funcName>
+	 *			Creates a function with name <funcName>
+	 *		eat <funcName>
+	 *			Calls function with name <funcName>
 	 *
 	 */
 	bool interpreted	= false;
