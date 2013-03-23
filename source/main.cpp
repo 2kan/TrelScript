@@ -11,6 +11,7 @@ int main()
 	ts->runScript();
 	delete ts;
 
+	std::cout << "Press enter to exit.";
 	std::cin.get();
 	return 0;
 }
