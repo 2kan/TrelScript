@@ -25,6 +25,7 @@ Script::Script(std::string a_filename)
 	lines			= new Line[m_numberOfLines];
 	functions		= new Function[m_numberOfFunctions];
 	getLines();
+	setFunctions();
 }
 
 Script::~Script()
@@ -91,13 +92,42 @@ bool Script::executeScript()
 {
 	if(m_filepath != "{{use default}}")
 	{
-		for(int i=0; i<m_numberOfLines; ++i)
+		bool skipLine	= false;
+		for(int lineNum=0; lineNum<m_numberOfLines; ++lineNum)
 		{
-			if(lines[i].line != "") // Don't waste time
+			if(lines[lineNum].line != "") // If it's an empty line, just ignore it
 			{
-				// If the interpreter returns zero, exit the program (means a call to "divide by zero")
-				if(interpreter->interpretLine(lines[i]) == 0)
-					break;
+				// Check if the script calls a function
+				if(lines[lineNum].words[0] == "eat")
+				{
+					for(int i=0; i<m_numberOfFunctions; ++i) // Get the function it called
+					{
+						if(lines[lineNum].words[1] == functions[i].name)
+						{
+							// Execute each line of the function, then break
+							for(int funcLineNum=functions[i].lineStart; funcLineNum<functions[i].lineEnd-1; ++funcLineNum)
+							{
+								interpreter->interpretLine(lines[funcLineNum]);
+							}
+							break;
+						}
+					}
+				}
+				else
+				{
+					if(lines[lineNum].words[0] == "spud")
+						skipLine	= true;
+
+					if(!skipLine)
+					{
+						// If the interpreter returns zero, exit the program (means a call to "divide by zero")
+						if(interpreter->interpretLine(lines[lineNum]) == 0)
+							break;
+					}
+					
+					if(lines[lineNum].words[0] == "burn")
+						skipLine	= false;
+				}
 			}
 		}
 	}
