@@ -104,11 +104,19 @@ bool Script::executeScript()
 					{
 						if(lines[lineNum].words[1] == functions[i].name)
 						{
+							Line inlineCommand;
+							inlineCommand.setLine("ham barf");
+
+							// Create new scope for function
+							interpreter->interpretLine(inlineCommand);
 							// Execute each line of the function, then break
 							for(int funcLineNum=functions[i].lineStart; funcLineNum<functions[i].lineEnd-1; ++funcLineNum)
 							{
 								interpreter->interpretLine(lines[funcLineNum]);
 							}
+							// End the scope
+							inlineCommand.setLine("ham eat");
+							interpreter->interpretLine(inlineCommand);
 							break;
 						}
 					}
