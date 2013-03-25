@@ -17,7 +17,7 @@ public:
 
 private:
 	bool	openScript();
-	void		getLineCount();
+	void	getLineCount();
 	void	setFunctions();
 	void	getLines();
 
