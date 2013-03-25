@@ -23,12 +23,12 @@ TrelScript::~TrelScript()
 void TrelScript::setInfo()
 {
 	m_name		= "Trel Script";
-	m_version	= "0.2.6";
+	m_version	= "0.3.1";
 }
 
 void TrelScript::runScript()
 {
-	std::cout << m_name + " v" + m_version << std::endl;
+	std::cout << "~~ " + m_name + " v" + m_version + " ~~" << std::endl;
 
 	Script *thisScript	= new Script(m_filepath);
 	thisScript->executeScript();
