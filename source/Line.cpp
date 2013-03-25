@@ -14,7 +14,10 @@ using namespace std;
  ************************/
 void Line::setLine(std::string a_newLine, bool a_getWords)
 {
-	numChars	= a_newLine.size();
+	if(a_newLine[0] == 0 && a_newLine.size() == 1)
+		numChars	= 0;
+	else
+		numChars	= a_newLine.size();
 	a_newLine.copy(line, numChars);
 
 	if(a_getWords)
