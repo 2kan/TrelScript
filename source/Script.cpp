@@ -93,9 +93,11 @@ bool Script::executeScript()
 	if(m_filepath != "{{use default}}")
 	{
 		bool skipLine	= false;
+
+		// Yo dawg, I heard you like loops, so we put a loop in your loop so you can loop while you loop
 		for(int lineNum=0; lineNum<m_numberOfLines; ++lineNum)
 		{
-			if(lines[lineNum].line != "") // If it's an empty line, just ignore it
+			if(lines[lineNum].line[0] != '\0') // If it's an empty line, just ignore it
 			{
 				// Check if the script calls a function
 				if(lines[lineNum].words[0] == "eat")
