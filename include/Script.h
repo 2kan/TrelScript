@@ -32,6 +32,7 @@ private:
 	int	m_lineNumber;
 	int	m_numberOfLines;
 	int m_numberOfFunctions;
+	int m_recursionDepth;
 };
 
 #endif // __SCRIPT_H__

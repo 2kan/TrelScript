@@ -11,6 +11,7 @@ Script::Script()
 	m_filepath		= "{{use default}}";
 	m_numberOfLines	= 0;
 	m_numberOfFunctions	= 0;
+	m_recursionDepth	= 0;
 	lines			= new Line[1];
 	functions		= new Function[1];
 }
@@ -21,6 +22,7 @@ Script::Script(std::string a_filename)
 	m_filepath		= a_filename;
 	m_numberOfLines	= 0;
 	m_numberOfFunctions	= 0;
+	m_recursionDepth	= 0;
 	getLineCount();
 	lines			= new Line[m_numberOfLines];
 	functions		= new Function[m_numberOfFunctions];
@@ -146,7 +148,19 @@ int Script::executeFunction(std::string a_funcName)
 			for(int funcLineNum=functions[i].lineStart; funcLineNum<functions[i].lineEnd-1; ++funcLineNum)
 			{
 				if(lines[funcLineNum].words[0] == "eat")
-					executeFunction(lines[funcLineNum].words[1]);
+				{
+					// Protect against a stack overflow.. kinda
+					if(m_recursionDepth < 5)
+					{
+						++m_recursionDepth;
+						executeFunction(lines[funcLineNum].words[1]);
+						--m_recursionDepth;
+					}
+					else
+					{
+						std::cout << "Recursion limit reached.\n";
+					}
+				}
 				else
 					interpreter->interpretLine(lines[funcLineNum]);
 			}
