@@ -16,6 +16,7 @@ private:
 	void	parseVarNames(Line&);
 	std::string	getVarValue(std::string);
 	std::string	setVar(Line);
+	std::string getInput();
 	void	showDebugInfo(std::string);
 	void	getScopedVars(Scope*);
 	void	createNewScope();
