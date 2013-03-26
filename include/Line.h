@@ -4,8 +4,11 @@
 #include <iostream>
 
 struct Line {
-	std::string words[1024];
-	char line[1024];
+	Line();
+	Line(std::string a_lineText);
+
+	std::string words[32];
+	char line[256];
 	int numChars;
 	int numWords;
 

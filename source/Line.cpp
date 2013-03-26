@@ -5,12 +5,23 @@
 
 using namespace std;
 
+Line::Line()
+{
+	setLine("{{use default}}", false);
+}
+
+Line::Line(string a_lineText)
+{
+	setLine(a_lineText);
+}
+
 /************************
  *	Purpose / what it does
  *		Converts the given string and sets it to the object's 'line' character array
  *	
  *	Parameters
- *		string a_charArray		The line to be set
+ *		string	a_charArray		The line to be set
+ *		bool	a_getWords		Default true. Whether or not to process the words in the line
  ************************/
 void Line::setLine(std::string a_newLine, bool a_getWords)
 {
