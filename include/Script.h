@@ -20,6 +20,7 @@ private:
 	void	getLineCount();
 	void	setFunctions();
 	void	getLines();
+	int		executeFunction(std::string a_funcName);
 
 	Interpreter *interpreter;
 	Function	*functions;

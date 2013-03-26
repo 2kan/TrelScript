@@ -52,19 +52,20 @@ void Script::setFunctions()
 {
 	std::string	line;
 	m_file.open(m_filepath.c_str());
-	for(int i=0; i<m_numberOfFunctions; ++i)
+	int funcCount	= 0;
+	int lineCount	= 0;
+	while (std::getline(m_file, line))
 	{
-		int lineCount	= 0;
-		while (std::getline(m_file, line))
+		++lineCount;
+		if(line.substr(0,4) == "spud")
 		{
-			++lineCount;
-			if(line.substr(0,4) == "spud")
-			{
-				functions[i].name		= line.substr(5);
-				functions[i].lineStart	= lineCount;
-			}
-			else if(line == "burn spud")
-				functions[i].lineEnd	= lineCount;
+			functions[funcCount].name		= line.substr(5);
+			functions[funcCount].lineStart	= lineCount;
+		}
+		else if(line == "burn spud")
+		{
+			functions[funcCount].lineEnd	= lineCount;
+			++funcCount;
 		}
 	}
 	m_file.close();
@@ -100,30 +101,11 @@ bool Script::executeScript()
 			if(lines[lineNum].line[0] != '\0') // If it's an empty line, just ignore it
 			{
 				// Check if the script calls a function
-				if(lines[lineNum].words[0] == "eat")
+				if(lines[lineNum].words[0] == "eat" && !skipLine)
 				{
-					for(int i=0; i<m_numberOfFunctions; ++i) // Get the function it called
-					{
-						if(lines[lineNum].words[1] == functions[i].name)
-						{
-							Line inlineCommand;
-							inlineCommand.setLine("ham barf");
-
-							// Create new scope for function
-							interpreter->interpretLine(inlineCommand);
-							// Execute each line of the function, then break
-							for(int funcLineNum=functions[i].lineStart; funcLineNum<functions[i].lineEnd-1; ++funcLineNum)
-							{
-								interpreter->interpretLine(lines[funcLineNum]);
-							}
-							// End the scope
-							inlineCommand.setLine("ham eat");
-							interpreter->interpretLine(inlineCommand);
-							break;
-						}
-					}
+					executeFunction(lines[lineNum].words[1]);
 				}
-				else
+				else 
 				{
 					if(lines[lineNum].words[0] == "spud")
 						skipLine	= true;
@@ -147,4 +129,33 @@ bool Script::executeScript()
 	}
 
 	return true;
+}
+
+int Script::executeFunction(std::string a_funcName)
+{
+	for(int i=0; i<m_numberOfFunctions; ++i) // Get the function it called
+	{
+		if(functions[i].name == a_funcName)
+		{
+			Line inlineCommand;
+			inlineCommand.setLine("ham barf");
+
+			// Create new scope for function
+			interpreter->interpretLine(inlineCommand);
+			// Execute each line of the function, then break
+			for(int funcLineNum=functions[i].lineStart; funcLineNum<functions[i].lineEnd-1; ++funcLineNum)
+			{
+				if(lines[funcLineNum].words[0] == "eat")
+					executeFunction(lines[funcLineNum].words[1]);
+				else
+					interpreter->interpretLine(lines[funcLineNum]);
+			}
+			// End the scope
+			inlineCommand.setLine("ham eat");
+			interpreter->interpretLine(inlineCommand);
+			break;
+		}
+	}
+
+	return 0;
 }
