@@ -7,7 +7,7 @@ using namespace std;
 
 Line::Line()
 {
-	setLine("{{use default}}", false);
+	setLine("Bad line ctor", false);
 }
 
 Line::Line(string a_lineText)

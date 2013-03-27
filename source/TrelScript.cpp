@@ -5,7 +5,7 @@
 
 TrelScript::TrelScript()
 {
-	m_filepath	= "{{use default}}";
+	m_filepath	= "";
 	setInfo();
 }
 
