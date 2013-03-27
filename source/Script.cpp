@@ -8,7 +8,7 @@
 Script::Script()
 {
 	interpreter		= new Interpreter();
-	m_filepath		= "{{use default}}";
+	m_filepath		= "";
 	m_numberOfLines	= 0;
 	m_numberOfFunctions	= 0;
 	m_recursionDepth	= 0;
@@ -35,6 +35,15 @@ Script::~Script()
 	delete[] lines;
 	delete[] functions;
 	delete interpreter;
+}
+
+void Script::setConfig(std::string a_settingName, std::string a_settingValue)
+{
+	std::string n	= a_settingName;
+	if(n == "recursionLimit")
+	{
+		/*m_recursionDepth = a_settingValue;*/ // Commented out because xcode derp
+	}
 }
 
 void Script::getLineCount()
@@ -93,7 +102,7 @@ void Script::getLines()
 
 bool Script::executeScript()
 {
-	if(m_filepath != "{{use default}}")
+	if(m_filepath != "")
 	{
 		bool skipLine	= false;
 

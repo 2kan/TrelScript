@@ -16,7 +16,7 @@ public:
 	bool executeScript();
 
 private:
-	bool	openScript();
+	void	setConfig(std::string a_settingName, std::string a_settingValue);
 	void	getLineCount();
 	void	setFunctions();
 	void	getLines();
