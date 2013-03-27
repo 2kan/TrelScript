@@ -23,7 +23,9 @@ Interpreter::Interpreter()
 	scope[1]	= new Scope(2);
 
 	curScope	= 1;
-
+	
+	m_maxFunctions	= 10;
+	m_pScriptFunctions	= new Function[10];
 	
 }
 
@@ -161,17 +163,19 @@ string Interpreter::setVar(Line a_l)
 	if(a_l.numWords == 7 && a_l.words[3] == "num")
 	{
 		char buffer[16];
-		int lhs	= atoi(a_l.words[4].c_str());
-		int rhs	= atoi(a_l.words[6].c_str());
+		//int lhs	= atoi(a_l.words[4].c_str());
+		//int rhs	= atoi(a_l.words[6].c_str());
 		
-		if(a_l.words[5] == "add")
+		
+		// Commented out so xcode will compile while I'm working on this on my flight
+		/*if(a_l.words[5] == "add")
 			itoa((lhs + rhs), buffer, 10);
 		else if(a_l.words[5] == "sub")
 			itoa((lhs - rhs), buffer, 10);
 		else if(a_l.words[5] == "mul")
 			itoa((lhs * rhs), buffer, 10);
 		else if(a_l.words[5] == "div")
-			itoa((lhs / rhs), buffer, 10);
+			itoa((lhs / rhs), buffer, 10);*/
 
 		return string(buffer);
 	}
@@ -222,4 +226,24 @@ void Interpreter::destroyScope()
 		//delete scope[curScope];
 		--curScope;
 	}
+}
+
+
+
+// Trelscript as a lib implementation
+
+void Interpreter::addFunction(string a_funcName, void *a_func)
+{
+	for(int i=0; i<m_maxFunctions; ++i)
+	{
+		if(m_pScriptFunctions->getFuncPtr() == NULL)
+		{
+			m_pScriptFunctions->setFuncPtr(a_func);
+		}
+	}
+}
+
+void Interpreter::runFunction(std::string a_funcName)
+{
+	// Run the function pointer here
 }
