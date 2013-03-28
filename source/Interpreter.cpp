@@ -232,11 +232,11 @@ void Interpreter::destroyScope()
 
 // Trelscript as a lib implementation
 
-void Interpreter::addFunction(string a_funcName, void *a_func)
+void Interpreter::addFunction(string a_funcName, void (*a_func)())
 {
 	for(int i=0; i<m_maxFunctions; ++i)
 	{
-		if(m_pScriptFunctions->getFuncPtr() == NULL)
+		if(m_pScriptFunctions->m_pFunction == NULL)
 		{
 			m_pScriptFunctions->setFuncPtr(a_func);
 		}
@@ -245,5 +245,9 @@ void Interpreter::addFunction(string a_funcName, void *a_func)
 
 void Interpreter::runFunction(std::string a_funcName)
 {
-	// Run the function pointer here
+	for(int i=0; i<m_maxFunctions; ++i)
+	{
+		if(m_pScriptFunctions[i].name == a_funcName)
+			m_pScriptFunctions[i].m_pFunction();
+	}
 }

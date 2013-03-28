@@ -26,7 +26,7 @@ private:
 	
 	
 	// Start of trelscript as a lib implementation
-	void	addFunction(std::string a_funcName, void* a_func);
+	void	addFunction(std::string a_funcName, void (*a_func)());
 	void	runFunction(std::string a_funcName);
 	
 	Function *m_pScriptFunctions;
