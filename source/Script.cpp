@@ -14,6 +14,9 @@ Script::Script()
 	m_recursionDepth	= 0;
 	lines			= new Line[1];
 	functions		= new Function[1];
+	
+	maxLibFuncs	= 10;
+	libFunctions	= new Function[10];
 }
 
 Script::Script(std::string a_filename)
@@ -28,6 +31,9 @@ Script::Script(std::string a_filename)
 	functions		= new Function[m_numberOfFunctions];
 	getLines();
 	setFunctions();
+	
+	maxLibFuncs	= 10;
+	libFunctions	= new Function[10];
 }
 
 Script::~Script()
@@ -114,7 +120,9 @@ bool Script::executeScript()
 				// Check if the script calls a function
 				if(lines[lineNum].words[0] == "eat" && !skipLine)
 				{
-					executeFunction(lines[lineNum].words[1]);
+					// If there is a lib function with the name, run it. If not, run the script with the same name
+					if(runLibFunction(lines[lineNum].words[1]) == 1) // Returns 1 if could not find a lib func with specified name
+						executeFunction(lines[lineNum].words[1]);
 				}
 				else 
 				{
@@ -181,4 +189,32 @@ int Script::executeFunction(std::string a_funcName)
 	}
 
 	return 0;
+}
+
+
+// Trelscript as a lib implementation
+
+void Script::addLibFunction(std::string a_funcName, void (*a_func)())
+{
+	for(int i=0; i<maxLibFuncs; ++i)
+	{
+		if(libFunctions->m_pFunction == NULL)
+		{
+			libFunctions->setFuncPtr(a_func);
+		}
+	}
+}
+
+int Script::runLibFunction(std::string a_funcName)
+{
+	for(int i=0; i<maxLibFuncs; ++i)
+	{
+		if(libFunctions[i].name == a_funcName)
+		{
+			libFunctions[i].m_pFunction();
+			return 0;
+		}
+	}
+	
+	return 1;
 }

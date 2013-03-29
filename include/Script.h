@@ -21,6 +21,15 @@ private:
 	void	setFunctions();
 	void	getLines();
 	int		executeFunction(std::string a_funcName);
+	
+	
+	// Start of trelscript as a lib implementation
+	void	addLibFunction(std::string a_funcName, void (*a_func)());
+	void	runLibFunction(std::string a_funcName);
+	
+	Function	*libFunctions;
+	int			maxLibFuncs;
+	
 
 	Interpreter *interpreter;
 	Function	*functions;
