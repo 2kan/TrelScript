@@ -48,7 +48,7 @@ void Script::setConfig(std::string a_settingName, std::string a_settingValue)
 	std::string n	= a_settingName;
 	if(n == "recursionLimit")
 	{
-		/*m_recursionDepth = a_settingValue;*/ // Commented out because xcode derp
+		m_recursionDepth = atoi(a_settingValue.c_str());
 	}
 }
 
