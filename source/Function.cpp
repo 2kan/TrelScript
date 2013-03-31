@@ -1,18 +1,12 @@
 #include "Function.h"
 
-/*Function::Function()
+
+Function::Function()
 {
-	lineStart	= 0;
-	lineEnd		= 0;
+	m_pFunction	= NULL;
 }
-
-Function::Function(int a_lineStart, int a_lineEnd)
+	
+void Function::setFuncPtr(void (*a_pFunc)())
 {
-	lineStart	= a_lineStart;
-	lineEnd		= a_lineEnd;
+	m_pFunction	= a_pFunc;
 }
-
-Function::~Function()
-{
-
-}*/
