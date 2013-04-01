@@ -120,6 +120,7 @@ int Interpreter::interpretLine(Line &l)
 		runNextLine	= true;
 	}
 
+	// Interpreted okay, return 1
 	return 1;
 }
 
