@@ -13,7 +13,8 @@ public:
 	Script(std::string file);
 	~Script();
 
-	bool executeScript();
+	bool	executeScript();
+	void	addLibFunction(std::string a_funcName, void (*a_func)());
 
 private:
 	void	setConfig(std::string a_settingName, std::string a_settingValue);
@@ -24,7 +25,6 @@ private:
 	
 	
 	// Start of trelscript as a lib implementation
-	void	addLibFunction(std::string a_funcName, void (*a_func)());
 	int		runLibFunction(std::string a_funcName);
 	
 	Function	*libFunctions;
