@@ -76,7 +76,7 @@ void Script::setFunctions()
 		++lineCount;
 		if(line.substr(0,4) == "spud")
 		{
-			functions[funcCount].name		= line.substr(5);
+			functions[funcCount].setName(line.substr(5));
 			functions[funcCount].lineStart	= lineCount;
 		}
 		else if(line == "burn spud")
@@ -154,7 +154,7 @@ int Script::executeFunction(std::string a_funcName)
 {
 	for(int i=0; i<m_numberOfFunctions; ++i) // Get the function it called
 	{
-		if(functions[i].name == a_funcName)
+		if(functions[i].getName() == a_funcName)
 		{
 			Line inlineCommand;
 			inlineCommand.setLine("ham barf");
@@ -200,6 +200,7 @@ void Script::addLibFunction(std::string a_funcName, void (*a_func)())
 	{
 		if(libFunctions->m_pFunction == NULL)
 		{
+			libFunctions->setName(a_funcName);
 			libFunctions->setFuncPtr(a_func);
 		}
 	}
@@ -209,9 +210,9 @@ int Script::runLibFunction(std::string a_funcName)
 {
 	for(int i=0; i<maxLibFuncs; ++i)
 	{
-		if(libFunctions[i].name == a_funcName)
+		if(libFunctions[i].getName() == a_funcName)
 		{
-			libFunctions[i].m_pFunction();
+			libFunctions[i].runFunc();
 			return 0;
 		}
 	}
