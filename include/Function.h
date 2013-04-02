@@ -7,15 +7,20 @@ class Function
 {
 public:
 	Function();
+
 	void setFuncPtr(void (*a_pFunc)());
+	void setName(std::string a_name);
+	std::string getName();
+
+	void runFunc();
+
 	
-	std::string name;
 	int	lineStart;
 	int	lineEnd;
 	void (*m_pFunction)();
 	
 private:
-	// Trelscript as lib
+	std::string m_name;
 };
 
 
