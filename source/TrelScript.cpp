@@ -26,7 +26,7 @@ TrelScript::~TrelScript()
 void TrelScript::setInfo()
 {
 	m_name		= "Trel Script";
-	m_version	= "0.4";
+	m_version	= "0.4.1";
 }
 
 void TrelScript::runScript()
