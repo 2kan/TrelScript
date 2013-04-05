@@ -1,0 +1,21 @@
+0.4.1
+
+* Fixed bug when adding a function trigger
+
+
+0.4
+
++ Can now call functions in script which trigger a function to be run from code
++ Added capability to configure interpreter variables (such as the recursion depth limit)
+
+
+0.3.4
+
++ Added system variable which gets a line of textual user input
+
+
+0.3.3
+
+* Fixed bug which causes a stack overflow when using circular function calls/recursion
+* Made Line class take up considerably less memory
+* Line objects can now be initialized with line text
