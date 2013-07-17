@@ -12,7 +12,8 @@ public:
 	Interpreter();
 	~Interpreter();
 	
-	int interpretLine(Line&);
+	int interpretLine(Line);
+	bool conditionResult(std::string, std::string, std::string);
 
 private:
 	void	parseVarNames(Line&);
@@ -23,6 +24,7 @@ private:
 	void	getScopedVars(Scope*);
 	void	createNewScope();
 	void	destroyScope();
+	int		parseInt(std::string);
 	
 
 	int		maxVars;

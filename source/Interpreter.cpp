@@ -31,7 +31,7 @@ Interpreter::~Interpreter()
 	delete[] *scope;
 }
 
-int Interpreter::interpretLine(Line &l)
+int Interpreter::interpretLine(Line l)
 {
 	bool interpreted	= false;
 	++lineNumber;
@@ -111,6 +111,9 @@ int Interpreter::interpretLine(Line &l)
 			else if(l.words[0] == "notsame" && l.words[1] == l.words[2])
 				runNextLine	= false;
 		}
+		else if(l.words[0] == "roast" && l.words[1] == "while")
+		{
+		}
 
 		interpreted	= true;
 	}
@@ -122,6 +125,17 @@ int Interpreter::interpretLine(Line &l)
 
 	// Interpreted okay, return 1
 	return 1;
+}
+
+bool Interpreter::conditionResult(std::string lhs, std::string rhs, std::string comparator)
+{
+	if(lhs[0] == '@')
+		lhs	= getVarValue(lhs);
+	if(rhs[0] == '@')
+		rhs	= getVarValue(rhs);
+
+	// Let's use a really long ternary operator becuase potato
+	return (comparator == "lt") ? (parseInt(lhs) < parseInt(rhs)) ? true : false : (comparator == "gt") ? (parseInt(lhs) > parseInt(rhs)) ? true : false : (comparator == "same") ? (lhs == rhs) ? true : false : (comparator == "notsame") ? (lhs != rhs) ? true : false : false;
 }
 
 void Interpreter::parseVarNames(Line &l)
@@ -161,8 +175,8 @@ string Interpreter::setVar(Line a_l)
 	if(a_l.numWords == 7 && a_l.words[3] == "num")
 	{
 		char buffer[16];
-		int lhs	= atoi(a_l.words[4].c_str());
-		int rhs	= atoi(a_l.words[6].c_str());
+		int lhs	= atoi((a_l.words[4][0] == '@') ? getVarValue(a_l.words[4]).c_str() : a_l.words[4].c_str());
+		int rhs	= atoi((a_l.words[6][0] == '@') ? getVarValue(a_l.words[6]).c_str() : a_l.words[6].c_str());;
 
 		if(a_l.words[5] == "add")
 			itoa((lhs + rhs), buffer, 10);
@@ -224,5 +238,7 @@ void Interpreter::destroyScope()
 	}
 }
 
-
-
+int Interpreter::parseInt(std::string str)
+{
+	return atoi(str.c_str());
+}
