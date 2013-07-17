@@ -1,3 +1,9 @@
+0.4.2
+
++ Added while loop support
++ Added ability to use variables as numbers when doing math calculations
+
+
 0.4.1
 
 * Fixed bug when adding a function trigger
