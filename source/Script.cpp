@@ -17,6 +17,9 @@ Script::Script()
 	
 	maxLibFuncs	= 10;
 	libFunctions	= new Function[10];
+
+	m_inLoop		= false;
+	m_skipToRoasted	= false;
 }
 
 Script::Script(std::string a_filename)
@@ -34,6 +37,9 @@ Script::Script(std::string a_filename)
 	
 	maxLibFuncs	= 10;
 	libFunctions	= new Function[10];
+
+	m_inLoop		= false;
+	m_skipToRoasted	= false;
 }
 
 Script::~Script()
@@ -115,7 +121,7 @@ bool Script::executeScript()
 		// Yo dawg, I heard you like loops, so we put a loop in your loop so you can loop while you loop
 		for(int lineNum=0; lineNum<m_numberOfLines; ++lineNum)
 		{
-			if(lines[lineNum].line[0] != '\0') // If it's an empty line, just ignore it
+			if(lines[lineNum].line[0] != '\0' && !m_skipToRoasted)// && lines[lineNum].words[0] != "roasted")) // If it's an empty line, just ignore it
 			{
 				// Check if the script calls a function
 				if(lines[lineNum].words[0] == "eat" && !skipLine)
@@ -123,6 +129,23 @@ bool Script::executeScript()
 					// If there is a lib function with the name, run it. If not, run the script with the same name
 					if(runLibFunction(lines[lineNum].words[1]) == 1) // Returns 1 if could not find a lib func with specified name
 						executeFunction(lines[lineNum].words[1]);
+				}
+				else if(lines[lineNum].words[0] == "roast" && lines[lineNum].words[1] == "while")
+				{
+					if(interpreter->conditionResult(lines[lineNum].words[2], lines[lineNum].words[4], lines[lineNum].words[3]))
+					{
+						m_inLoop	= true;
+						m_loopLine	= lineNum;
+					}
+					else
+					{
+						m_skipToRoasted	= true;
+					}
+				}
+				else if(lines[lineNum].words[0] == "roasted" && m_inLoop)
+				{
+					m_inLoop	= false;
+					lineNum		= m_loopLine - 1;
 				}
 				else 
 				{
@@ -139,6 +162,10 @@ bool Script::executeScript()
 					if(lines[lineNum].words[0] == "burn")
 						skipLine	= false;
 				}
+			}
+			else if(m_skipToRoasted && lines[lineNum].words[0] == "roasted")
+			{
+				m_skipToRoasted	= false;
 			}
 		}
 	}

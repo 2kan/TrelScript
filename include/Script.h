@@ -4,7 +4,7 @@
 #include <fstream>
 class Interpreter;
 class Function;
-class Line;
+struct Line;
 
 class Script
 {
@@ -42,6 +42,10 @@ private:
 	int	m_numberOfLines;
 	int m_numberOfFunctions;
 	int m_recursionDepth;
+
+	bool m_skipToRoasted;
+	bool m_inLoop;
+	int m_loopLine;
 };
 
 #endif // __SCRIPT_H__
