@@ -16,4 +16,4 @@ Sure, you can help. Anyone is free to help the development of this project so lo
 License Info
 --
 
-This software is licensed under the GNU GPL 3.0 license. See <http://www.gnu.org/licenses/gpl-3.0.html> for the full GNU General Public License.
+This software is licensed under the Trelpache 4.20 license, which can be found at /dev/null.
