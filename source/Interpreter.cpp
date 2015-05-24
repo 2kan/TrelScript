@@ -21,11 +21,8 @@ limitations under the License.
 #include "Line.h"
 #include "Scope.h"
 
-using namespace std;
-
 Interpreter::Interpreter()
 {
-	curScope	= 0;
 	maxVars		= 100;
 	varCounter	= 0;
 	lineNumber	= 0;
@@ -34,29 +31,26 @@ Interpreter::Interpreter()
 
 
 	// System scope
-	scope[0]	= new Scope(1);
+	m_scope.push_back(Scope(1));
 	// User scope
-	scope[1]	= new Scope(2);
-
-	curScope	= 1;
+	m_scope.push_back(Scope(2));
 
 }
 
 Interpreter::~Interpreter()
 {
-	delete[] * scope;
 }
 
 int Interpreter::interpretLine(Line l)
 {
-	bool interpreted	= false;
+	bool interpreted = false;
 	++lineNumber;
 
 	if (lineNumber == 1)
 	{
-		if (l.wordCount() == 2 && l.word(0) == "trole" && l.word(1) == "bugs")
+		if (l.wordCount() == 2 && l.word(0) == "#trole" && l.word(1) == "bugs")
 		{
-			debugMode	= true;
+			debugMode = true;
 			return 1;
 		}
 	}
@@ -74,11 +68,11 @@ int Interpreter::interpretLine(Line l)
 
 		if (l.word(0) == "trel")
 		{
-			for (int i=1; i < l.wordCount(); ++i)
+			for (int i = 1; i < l.wordCount(); ++i)
 			{
-				cout << l.word(i) << " ";
+				std::cout << l.word(i) << " ";
 			}
-			cout << endl;
+			std::cout << std::endl;
 		}
 		else if (l.word(0) == "ham")
 		{
@@ -97,27 +91,31 @@ int Interpreter::interpretLine(Line l)
 		{
 			// Check if the variable already exists
 			bool varExists	= false;
-			for (int i=0; i <= curScope; ++i)
+			for (int i = 0; i < m_scope.size(); ++i) //TODO: aren't we meant to check backwards?
 			{
-				for (int k=0; k <= scope[i]->varCount; ++k)
+				// If variable already exists, update the value
+				int index = m_scope[i].findVar(l.word(1));
+				if (index != -1)
 				{
-					// If variable already exists, update the value
-					if (l.word(1) == scope[i]->vars[k].name)
-					{
-						scope[i]->vars[k].value	= setVar(l);
-						showDebugInfo("Updated variable '" + scope[i]->vars[k].name + "'to new value '" + scope[i]->vars[k].value);
-						varExists	= true;
-					}
+					Var& var = m_scope[i].var(index);
+					var.value	= setVar(l);
+					showDebugInfo("Updated variable '" + var.name + "'to new value '" + var.value);
+					varExists	= true;
 				}
 			}
 
 			if (!varExists)
 			{
-				int vcount	= scope[curScope]->varCount;
-				scope[curScope]->vars[vcount].name	= l.word(1);
-				scope[curScope]->vars[vcount].value	= setVar(l);
-				showDebugInfo("Created variable '" + scope[curScope]->vars[vcount].name + "' with value '" + scope[curScope]->vars[vcount].value + "'");
-				++scope[curScope]->varCount;
+				Scope& scope = m_scope[m_scope.size() - 1];
+
+				std::string value = setVar(l);
+				scope.addVar(l.word(1), value);
+
+				auto varCount = scope.varCount();
+				showDebugInfo(
+					"Created variable '" +	l.word(1) +
+					"' with value '" +		value + "'"
+					);
 			}
 		}
 		else if ((l.word(0) == "same" || l.word(0) == "notsame") && l.wordCount() >= 3)
@@ -129,6 +127,7 @@ int Interpreter::interpretLine(Line l)
 		}
 		else if (l.word(0) == "roast" && l.word(1) == "while")
 		{
+			//TODO: While loops?
 		}
 
 		interpreted	= true;
@@ -145,13 +144,29 @@ int Interpreter::interpretLine(Line l)
 
 bool Interpreter::conditionResult(std::string lhs, std::string rhs, std::string comparator)
 {
+	//TODO: The comparison operators make too much sense and must be potatified.
+
 	if (lhs[0] == '@')
 		lhs	= getVarValue(lhs);
 	if (rhs[0] == '@')
 		rhs	= getVarValue(rhs);
 
-	// Let's use a really long ternary operator becuase potato
-	return (comparator == "lt") ? (parseInt(lhs) < parseInt(rhs)) ? true : false : (comparator == "gt") ? (parseInt(lhs) > parseInt(rhs)) ? true : false : (comparator == "same") ? (lhs == rhs) ? true : false : (comparator == "notsame") ? (lhs != rhs) ? true : false : false;
+	// Let's not use really long ternary operators to do this because that's potato and Tom's a shithead.
+	if (comparator == "lt")
+		return (parseInt(lhs) < parseInt(rhs));
+	else if (comparator == "gt")
+		return (parseInt(lhs) > parseInt(rhs));
+	else if (comparator == "same")
+		return (parseInt(lhs) == parseInt(rhs));
+	else if (comparator == "notsame")
+		return (parseInt(lhs) == parseInt(rhs));
+		// Haha compiler specific nonstandard extensions.
+	else if (comparator == "ltsame")
+		return (parseInt(lhs) <= parseInt(rhs));
+	else if (comparator == "gtsame")
+		return (parseInt(lhs) >= parseInt(rhs));
+	else
+		return false; // If all else fails... and who needs bad syntax handling anyway?
 }
 
 void Interpreter::parseVarNames(Line &l)
@@ -165,28 +180,27 @@ void Interpreter::parseVarNames(Line &l)
 	}
 }
 
-string Interpreter::getVarValue(string varName)
+std::string Interpreter::getVarValue(std::string a_varName)
 {
-	string at	= "@";
-
-	if (varName == at + "seeds")
+	if (a_varName == "@seeds")
+	{
 		return getInput();
+	}
 	else
 	{
-		for (int i=0; i <= curScope; ++i)
+		for (int i = 0; i < m_scope.size(); ++i) //TODO: Shouldn't this be backwards?
 		{
-			for (int k=0; k <= scope[i]->varCount; ++k)
-			{
-				if (at + scope[i]->vars[k].name == varName)
-					return scope[i]->vars[k].value;
-			}
+			Scope& scope = m_scope[i];
+			int index = scope.findVar(a_varName.substr(1));
+			if (index != -1)
+				return scope.var(index).value;
 		}
 	}
 
 	return "";
 }
 
-string Interpreter::setVar(Line a_l)
+std::string Interpreter::setVar(Line a_l)
 {
 	if (a_l.wordCount() == 7 && a_l.word(3) == "num")
 	{
@@ -210,47 +224,29 @@ string Interpreter::setVar(Line a_l)
 	}
 }
 
-string Interpreter::getInput()
+std::string Interpreter::getInput()
 {
-	string in;
-	cin >> in;
-	cin.ignore();
+	std::string in;
+	std::cin >> in;
+	std::cin.ignore();
 	return in;
 }
 
-void Interpreter::showDebugInfo(string a_info)
+void Interpreter::showDebugInfo(std::string a_info)
 {
 	if (debugMode)
-		cout << a_info << endl;
-}
-
-void Interpreter::getScopedVars(Scope *returnable)
-{
-	int count	= 0;
-
-	for (int i=0; i < curScope; ++i)
-	{
-		for (int k=0; k < scope[i]->varCount; ++i)
-		{
-			returnable->vars[count]	= scope[i]->vars[k];
-			++count;
-		}
-	}
+		std::cout << a_info << std::endl;
 }
 
 void Interpreter::createNewScope()
 {
-	++curScope;
-	scope[curScope]	= new Scope(curScope + 1);
+	m_scope.push_back(Scope(m_scope.size() + 1));
 }
 
 void Interpreter::destroyScope()
 {
-	if (curScope > 0)
-	{
-		//delete scope[curScope];
-		--curScope;
-	}
+	if (m_scope.size() > 0)
+		m_scope.pop_back();
 }
 
 int Interpreter::parseInt(std::string str)

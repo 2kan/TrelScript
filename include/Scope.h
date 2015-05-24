@@ -19,6 +19,8 @@ limitations under the License.
 
 #include "Line.h"
 #include "Var.h"
+#include <string>
+#include <vector>
 
 class Scope
 {
@@ -27,9 +29,17 @@ public:
 	Scope(unsigned int a_id);
 	~Scope();
 
-	Var *vars;
-	int varCount;
-	unsigned int id;
+	const Var& var(int a_index) const;
+	Var& var(int a_index);
+	unsigned int varCount() const;
+	unsigned int id() const;
+
+	void addVar(std::string a_name, std::string a_value);
+	int findVar(std::string a_name);
+
+private:
+	std::vector<Var> m_vars;
+	unsigned int m_id;
 };
 
 #endif // __SCOPE_H__

@@ -19,6 +19,7 @@ limitations under the License.
 
 #include "Scope.h"
 #include "Line.h"
+#include <vector>
 
 #include "Function.h"
 
@@ -37,7 +38,6 @@ private:
 	std::string	setVar(Line);
 	std::string getInput();
 	void	showDebugInfo(std::string);
-	void	getScopedVars(Scope*);
 	void	createNewScope();
 	void	destroyScope();
 	int		parseInt(std::string);
@@ -46,9 +46,8 @@ private:
 	int		maxVars;
 	int		varCounter;
 	bool	debugMode;
-	Scope	*scope[50];
+	std::vector<Scope> m_scope;
 	int		lineNumber;
-	int		curScope;
 	bool	runNextLine;
 };
 

@@ -19,18 +19,62 @@ limitations under the License.
 
 Scope::Scope()
 {
-	vars		= new Var[100];
-	varCount	= 0;
+
 }
 
-Scope::Scope(unsigned int a_id)
+Scope::Scope(unsigned int a_id) :
+	m_id(a_id)
 {
-	vars		= new Var[100];
-	varCount	= 0;
-	id	= a_id;
+
 }
 
 Scope::~Scope()
 {
-	delete[] vars;
+
+}
+
+
+const Var& Scope::var(int a_index) const
+{
+	return m_vars[a_index];
+}
+
+Var& Scope::var(int a_index)
+{
+	return m_vars[a_index];
+}
+
+unsigned int Scope::varCount() const
+{
+	return m_vars.size();
+}
+
+unsigned int Scope::id() const
+{
+	return m_id;
+}
+
+
+void Scope::addVar(std::string a_name, std::string a_value)
+{
+	Var newVar;
+	newVar.name		= a_name;
+	newVar.value	= a_value;
+
+	m_vars.push_back(newVar);
+
+}
+
+int Scope::findVar(std::string a_name)
+{
+	int i = 0;
+	for (Var& var : m_vars)
+	{
+		if (var.name.compare(a_name) == 0)
+			return i;
+
+		++i;
+	}
+
+	return -1;
 }
