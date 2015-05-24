@@ -14,21 +14,40 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include <iostream>
-#include <string>
 #include "Line.h"
-
-using namespace std;
+#include <array>
 
 Line::Line()
 {
 	setLine("Bad line ctor", false);
 }
 
-Line::Line(string a_lineText)
+Line::Line(std::string a_lineText)
 {
 	setLine(a_lineText);
 }
+
+
+const std::string& Line::line() const
+{
+	return m_line;
+}
+
+const std::string& Line::word(int a_index) const
+{
+	return m_words[a_index];
+}
+
+std::string& Line::word(int a_index)
+{
+	return m_words[a_index];
+}
+
+int Line::wordCount() const
+{
+	return m_words.size();
+}
+
 
 /************************
  *	Purpose / what it does
@@ -40,11 +59,7 @@ Line::Line(string a_lineText)
  ************************/
 void Line::setLine(std::string a_newLine, bool a_getWords)
 {
-	if (a_newLine[0] == 0 && a_newLine.size() == 1)
-		numChars	= 0;
-	else
-		numChars	= a_newLine.size();
-	a_newLine.copy(line, numChars);
+	m_line = a_newLine;
 
 	if (a_getWords)
 		getWords();
@@ -57,84 +72,36 @@ void Line::setLine(std::string a_newLine, bool a_getWords)
  ************************/
 void Line::getWords()
 {
-	// Used when testing characters from other arrays for a space-bar
-	char space	= ' ';
-	char tab	= '	';
+	// First clear the words vector.
+	m_words.clear();
 
-	// Initialise the vairables we'll be using to locate words
-	numWords = 0;
-	char thisWord[1024];
-	int charCounter	= 0;
+	// Characters used for separation.
+	std::array<char, 2> seperators = {' ', '\t'};
 
-	for (int i = 0; i < numChars; ++i)
+	size_t i, lastIndex = 0;
+	for (i = 0; i < m_line.size(); ++i)
 	{
-		// If this character in 'line' is a space or if we're at the end of the 'line' array, add word to the array of words
-		if (line[i] == space || i == numChars - 1)
+		for (unsigned int j = 0; j < seperators.size(); ++j)
 		{
-			if (i == numChars - 1)
+			if (m_line[i] == seperators[j])
 			{
-				thisWord[charCounter]	= line[i];
-				++charCounter;
-			}
-
-			words[numWords]	= charArrayToString(thisWord, charCounter);
-			clearArray(thisWord, 1024);
-			charCounter	= 0;
-			++numWords;
-		}
-		// If it's not a 'flag' for a new word, record the letter and increment the character count
-		else
-		{
-			if (line[i] != tab)
-			{
-				thisWord[charCounter] = line[i];
-				++charCounter;
+				size_t len = i - lastIndex;
+				if (len > 0)
+				{
+					std::string word = m_line.substr(lastIndex, len);
+					m_words.push_back(word);
+					lastIndex = i + 1;
+					break;
+				}
+				lastIndex = i + 1;
 			}
 		}
-
 	}
-}
-
-/************************
- *	Purpose / what it does
- *		Clears the given array
- *
- *	Parameters
- *		char* a_array			Memory location of the array to nullify
- *		int a_arraySize			Number of elements in array
- ************************/
-void Line::clearArray(char *a_array, int a_arraySize)
-{
-	// This should be obivous
-	for (int i=0; i < a_arraySize; ++i)
-		a_array[i] = NULL;
-}
-
-/************************
- *	Purpose / what it does
- *		Converts a character array to a string
- *
- *	Parameters
- *		char* a_charArray		The character array to convert to a string
- *		int a_usableSize		The number of chars to use (useful if there's padding at the end of the array)
- *
- *	Returns
- *		string					The char array as a string
- ************************/
-string Line::charArrayToString(char* a_charArray, int a_usableSize)
-{
-	// Create new array of the size specified (plus one for the null character) so that we only use what is actual data (not the other padding)
-	char *newArray	= new char[a_usableSize + 1];
-	for (int i=0; i < a_usableSize; ++i)
-		newArray[i]	= a_charArray[i];
-
-	// Add the null character to prevent derps
-	newArray[a_usableSize] = '\0';
-
-	// Set to string so we can safely destroy the pointer array before returning
-	string toReturn	= string(newArray);
-
-	// Delete array and return string
-	delete newArray;
-	return toReturn;
+	
+	size_t len = --i - lastIndex;
+	if (len > 0)
+	{
+		std::string word = m_line.substr(lastIndex, len);
+		m_words.push_back(word);
+	}
 }

@@ -54,7 +54,7 @@ int Interpreter::interpretLine(Line l)
 
 	if (lineNumber == 1)
 	{
-		if (l.numWords == 2 && l.words[0] == "trole" && l.words[1] == "bugs")
+		if (l.wordCount() == 2 && l.word(0) == "trole" && l.word(1) == "bugs")
 		{
 			debugMode	= true;
 			return 1;
@@ -62,38 +62,38 @@ int Interpreter::interpretLine(Line l)
 	}
 
 	// Only interpret the line if it isn't a comment
-	if (l.line[0] != '#' && runNextLine)
+	if (l.line()[0] != '#' && runNextLine)
 	{
 		parseVarNames(l);
 
-		if (l.words[0] == "divide" && l.words[1] == "by" && l.words[2] == "zero")
+		if (l.word(0) == "divide" && l.word(1) == "by" && l.word(2) == "zero")
 		{
 			return 0;
 		}
 
 
-		if (l.words[0] == "trel")
+		if (l.word(0) == "trel")
 		{
-			for (int i=1; i < l.numWords; ++i)
+			for (int i=1; i < l.wordCount(); ++i)
 			{
-				cout << l.words[i] << " ";
+				cout << l.word(i) << " ";
 			}
 			cout << endl;
 		}
-		else if (l.words[0] == "ham")
+		else if (l.word(0) == "ham")
 		{
-			if (l.words[1] == "barf")
+			if (l.word(1) == "barf")
 			{
 				createNewScope();
 				showDebugInfo("Created slice of ham");
 			}
-			else if (l.words[1] == "eat")
+			else if (l.word(1) == "eat")
 			{
 				destroyScope();
 				showDebugInfo("Destroyed ham");
 			}
 		}
-		else if (l.words[0] == "potato")
+		else if (l.word(0) == "potato")
 		{
 			// Check if the variable already exists
 			bool varExists	= false;
@@ -102,7 +102,7 @@ int Interpreter::interpretLine(Line l)
 				for (int k=0; k <= scope[i]->varCount; ++k)
 				{
 					// If variable already exists, update the value
-					if (l.words[1] == scope[i]->vars[k].name)
+					if (l.word(1) == scope[i]->vars[k].name)
 					{
 						scope[i]->vars[k].value	= setVar(l);
 						showDebugInfo("Updated variable '" + scope[i]->vars[k].name + "'to new value '" + scope[i]->vars[k].value);
@@ -114,27 +114,27 @@ int Interpreter::interpretLine(Line l)
 			if (!varExists)
 			{
 				int vcount	= scope[curScope]->varCount;
-				scope[curScope]->vars[vcount].name	= l.words[1];
+				scope[curScope]->vars[vcount].name	= l.word(1);
 				scope[curScope]->vars[vcount].value	= setVar(l);
 				showDebugInfo("Created variable '" + scope[curScope]->vars[vcount].name + "' with value '" + scope[curScope]->vars[vcount].value + "'");
 				++scope[curScope]->varCount;
 			}
 		}
-		else if ((l.words[0] == "same" || l.words[0] == "notsame") && l.numWords >= 3)
+		else if ((l.word(0) == "same" || l.word(0) == "notsame") && l.wordCount() >= 3)
 		{
-			if (l.words[0] == "same" && l.words[1] != l.words[2])
+			if (l.word(0) == "same" && l.word(1) != l.word(2))
 				runNextLine	= false;
-			else if (l.words[0] == "notsame" && l.words[1] == l.words[2])
+			else if (l.word(0) == "notsame" && l.word(1) == l.word(2))
 				runNextLine	= false;
 		}
-		else if (l.words[0] == "roast" && l.words[1] == "while")
+		else if (l.word(0) == "roast" && l.word(1) == "while")
 		{
 		}
 
 		interpreted	= true;
 	}
 
-	if (!interpreted && !runNextLine && l.line[0] != '#')
+	if (!interpreted && !runNextLine && l.line()[0] != '#')
 	{
 		runNextLine	= true;
 	}
@@ -156,11 +156,11 @@ bool Interpreter::conditionResult(std::string lhs, std::string rhs, std::string 
 
 void Interpreter::parseVarNames(Line &l)
 {
-	for (int i=0; i < l.numWords; ++i)
+	for (int i=0; i < l.wordCount(); ++i)
 	{
-		if (l.words[i][0] == '@')
+		if (l.word(i)[0] == '@')
 		{
-			l.words[i]	= getVarValue(l.words[i]);
+			l.word(i) = getVarValue(l.word(i));
 		}
 	}
 }
@@ -188,25 +188,25 @@ string Interpreter::getVarValue(string varName)
 
 string Interpreter::setVar(Line a_l)
 {
-	if (a_l.numWords == 7 && a_l.words[3] == "num")
+	if (a_l.wordCount() == 7 && a_l.word(3) == "num")
 	{
-		int lhs	= atoi((a_l.words[4][0] == '@') ? getVarValue(a_l.words[4]).c_str() : a_l.words[4].c_str());
-		int rhs	= atoi((a_l.words[6][0] == '@') ? getVarValue(a_l.words[6]).c_str() : a_l.words[6].c_str());
+		int lhs	= atoi((a_l.word(4)[0] == '@') ? getVarValue(a_l.word(4)).c_str() : a_l.word(4).c_str());
+		int rhs	= atoi((a_l.word(6)[0] == '@') ? getVarValue(a_l.word(6)).c_str() : a_l.word(6).c_str());
 
-		if (a_l.words[5] == "add")
+		if (a_l.word(5) == "add")
 			return std::to_string(lhs - rhs);
-		else if (a_l.words[5] == "sub")
+		else if (a_l.word(5) == "sub")
 			return std::to_string(lhs - rhs);
-		else if (a_l.words[5] == "mul")
+		else if (a_l.word(5) == "mul")
 			return std::to_string(lhs - rhs);
-		else if (a_l.words[5] == "div")
+		else if (a_l.word(5) == "div")
 			return std::to_string(lhs - rhs);
 		else
 			return "";
 	}
 	else
 	{
-		return a_l.words[3];
+		return a_l.word(3);
 	}
 }
 

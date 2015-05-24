@@ -17,23 +17,27 @@ limitations under the License.
 #ifndef __LINE_H__
 #define __LINE_H__
 
-#include <iostream>
+#include <string>
+#include <vector>
 
-struct Line
+class Line
 {
+public:
 	Line();
 	Line(std::string a_lineText);
 
-	std::string words[32];
-	char line[256];
-	int numChars;
-	int numWords;
+	const std::string& line() const;
+	const std::string& word(int a_index) const;
+	std::string& word(int a_index);
+	int wordCount() const;
 
 	void setLine(std::string a_newLine, bool a_getWords = true);
 	void getWords();
 
-	void clearArray(char*, int);
-	std::string charArrayToString(char*, int);
+private:
+	std::vector<std::string> m_words;
+	std::string m_line;
+
 };
 
 

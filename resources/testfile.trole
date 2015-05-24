@@ -6,6 +6,9 @@ potato right is 20
 roast while @left gt @right
 	trel smoke weed erryday
 	potato left is num @left add 1
+	trel @left
+	trel "uncle"
+	trel @right
 roasted
 
 
