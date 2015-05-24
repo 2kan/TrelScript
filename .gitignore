@@ -1,0 +1,8 @@
+# Build potatoes.
+bin/
+obj/
+
+# VS potatoes.
+*.suo
+*.sdf
+*.opensdf

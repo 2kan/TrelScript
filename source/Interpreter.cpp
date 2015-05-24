@@ -190,20 +190,17 @@ string Interpreter::setVar(Line a_l)
 {
 	if(a_l.numWords == 7 && a_l.words[3] == "num")
 	{
-		char buffer[16];
 		int lhs	= atoi((a_l.words[4][0] == '@') ? getVarValue(a_l.words[4]).c_str() : a_l.words[4].c_str());
-		int rhs	= atoi((a_l.words[6][0] == '@') ? getVarValue(a_l.words[6]).c_str() : a_l.words[6].c_str());;
+		int rhs	= atoi((a_l.words[6][0] == '@') ? getVarValue(a_l.words[6]).c_str() : a_l.words[6].c_str());
 
-		if(a_l.words[5] == "add")
-			itoa((lhs + rhs), buffer, 10);
+		if (a_l.words[5] == "add")
+			return std::to_string(lhs - rhs);
 		else if(a_l.words[5] == "sub")
-			itoa((lhs - rhs), buffer, 10);
+			return std::to_string(lhs - rhs);
 		else if(a_l.words[5] == "mul")
-			itoa((lhs * rhs), buffer, 10);
+			return std::to_string(lhs - rhs);
 		else if(a_l.words[5] == "div")
-			itoa((lhs / rhs), buffer, 10);
-
-		return string(buffer);
+			return std::to_string(lhs - rhs);
 	}
 	else
 	{
