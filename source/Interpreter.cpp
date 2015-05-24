@@ -91,7 +91,7 @@ int Interpreter::interpretLine(Line l)
 		{
 			// Check if the variable already exists
 			bool varExists	= false;
-			for (int i = 0; i < m_scope.size(); ++i) //TODO: aren't we meant to check backwards?
+			for (unsigned int i = 0; i < m_scope.size(); ++i) //TODO: aren't we meant to check backwards?
 			{
 				// If variable already exists, update the value
 				int index = m_scope[i].findVar(l.word(1));
@@ -111,7 +111,6 @@ int Interpreter::interpretLine(Line l)
 				std::string value = setVar(l);
 				scope.addVar(l.word(1), value);
 
-				auto varCount = scope.varCount();
 				showDebugInfo(
 					"Created variable '" +	l.word(1) +
 					"' with value '" +		value + "'"
@@ -191,7 +190,7 @@ std::string Interpreter::getVarValue(std::string a_varName)
 	}
 	else
 	{
-		for (int i = 0; i < m_scope.size(); ++i) //TODO: Shouldn't this be backwards?
+		for (unsigned int i = 0; i < m_scope.size(); ++i) //TODO: Shouldn't this be backwards?
 		{
 			Scope& scope = m_scope[i];
 			int index = scope.findVar(a_varName.substr(1));

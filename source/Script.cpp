@@ -113,7 +113,7 @@ bool Script::executeScript()
 	bool skipLine = false;
 
 	// Yo dawg, I heard you like loops, so we put a loop in your loop so you can loop while you loop
-	for (int lineNum = 0; lineNum < m_lines.size(); ++lineNum)
+	for (unsigned int lineNum = 0; lineNum < m_lines.size(); ++lineNum)
 	{
 		if (m_lines[lineNum].line()[0] != '\0' && !m_skipToRoasted)// && lines[lineNum].word(0) != "roasted")) // If it's an empty line, just ignore it
 		{
@@ -168,7 +168,7 @@ bool Script::executeScript()
 
 int Script::executeFunction(std::string a_funcName)
 {
-	for (int i = 0; i < m_functions.size(); ++i) // Get the function it called
+	for (unsigned int i = 0; i < m_functions.size(); ++i) // Get the function it called
 	{
 		if (m_functions[i].getName() == a_funcName)
 		{
@@ -213,7 +213,7 @@ int Script::executeFunction(std::string a_funcName)
 // Trelscript as a lib implementation
 void Script::addLibFunction(std::string a_funcName, void(*a_func)())
 {
-	for (int i = 0; i < m_libFuncs.size(); ++i)
+	for (unsigned int i = 0; i < m_libFuncs.size(); ++i)
 	{
 		if (m_libFuncs[i].m_pFunction == nullptr)
 		{
@@ -225,7 +225,7 @@ void Script::addLibFunction(std::string a_funcName, void(*a_func)())
 
 int Script::runLibFunction(std::string a_funcName)
 {
-	for (int i = 0; i < m_libFuncs.size(); ++i)
+	for (unsigned int i = 0; i < m_libFuncs.size(); ++i)
 	{
 		if (m_libFuncs[i].getName() == a_funcName)
 		{

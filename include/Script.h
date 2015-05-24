@@ -23,7 +23,7 @@ limitations under the License.
 
 class Interpreter;
 class Function;
-struct Line;
+class Line;
 
 class Script
 {
