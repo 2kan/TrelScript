@@ -17,7 +17,10 @@ limitations under the License.
 #ifndef __SCRIPT_H__
 #define __SCRIPT_H__
 
+#include <memory>
 #include <fstream>
+#include <vector>
+
 class Interpreter;
 class Function;
 struct Line;
@@ -34,29 +37,23 @@ public:
 
 private:
 	void	setConfig(std::string a_settingName, std::string a_settingValue);
-	void	getLineCount();
 	void	setFunctions();
-	void	getLines();
+	bool	getLines();
+
 	int		executeFunction(std::string a_funcName);
-
-
 	// Start of trelscript as a lib implementation
 	int		runLibFunction(std::string a_funcName);
 
-	Function	*libFunctions;
-	int			maxLibFuncs;
+	std::unique_ptr<Interpreter>	interpreter;
+	std::vector<Function>			m_functions;
+	std::vector<Function>			m_libFuncs;
+	std::vector<Line>				m_lines;
 
-
-	Interpreter *interpreter;
-	Function	*functions;
-	Line		*lines;
-
-	std::ifstream	m_file;
+	bool			m_open;
 	std::string		m_filepath;
 	std::string		m_line;
+
 	int	m_lineNumber;
-	int	m_numberOfLines;
-	int m_numberOfFunctions;
 	int m_recursionDepth;
 
 	bool m_skipToRoasted;

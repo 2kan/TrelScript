@@ -24,49 +24,24 @@ limitations under the License.
 
 Script::Script()
 {
-	interpreter		= new Interpreter();
-	m_filepath		= "";
-	m_numberOfLines	= 0;
-	m_numberOfFunctions	= 0;
+	interpreter			= std::unique_ptr<Interpreter>(new Interpreter());
+	m_filepath			= "";
 	m_recursionDepth	= 0;
-	lines			= new Line[1];
-	functions		= new Function[1];
 
-	maxLibFuncs		= 10;
-	libFunctions	= new Function[10];
-
+	m_open			= false;
 	m_inLoop		= false;
 	m_skipToRoasted	= false;
 }
 
-Script::Script(std::string a_filename)
+Script::Script(std::string a_filename) : Script()
 {
-	interpreter			= new Interpreter();
-	m_filepath			= a_filename;
-	m_numberOfLines		= 0;
-	m_numberOfFunctions	= 0;
-	m_recursionDepth	= 0;
-
-	getLineCount();
-
-	lines			= new Line[m_numberOfLines];
-	functions		= new Function[m_numberOfFunctions];
-
-	getLines();
-	setFunctions();
-
-	maxLibFuncs		= 10;
-	libFunctions	= new Function[10];
-
-	m_inLoop		= false;
-	m_skipToRoasted	= false;
+	m_filepath = a_filename;
+	m_open = getLines ();
 }
 
 Script::~Script()
 {
-	delete[] lines;
-	delete[] functions;
-	delete interpreter;
+
 }
 
 void Script::setConfig(std::string a_settingName, std::string a_settingValue)
@@ -78,120 +53,114 @@ void Script::setConfig(std::string a_settingName, std::string a_settingValue)
 	}
 }
 
-void Script::getLineCount()
-{
-	std::string	line;
-	m_file.open(m_filepath.c_str());
-	while (std::getline(m_file, line))
-	{
-		++m_numberOfLines;
-		if (line.substr(0, 4) == "spud")
-			++m_numberOfFunctions;
-	}
-	m_file.close();
-}
-
 void Script::setFunctions()
 {
 	std::string	line;
-	m_file.open(m_filepath.c_str());
+	std::ifstream file (m_filepath);
 	int funcCount	= 0;
 	int lineCount	= 0;
-	while (std::getline(m_file, line))
+	while (std::getline(file, line))
 	{
 		++lineCount;
 		if (line.substr(0, 4) == "spud")
 		{
-			functions[funcCount].setName(line.substr(5));
-			functions[funcCount].lineStart	= lineCount;
+			m_functions[funcCount].setName(line.substr(5));
+			m_functions[funcCount].lineStart	= lineCount;
 		}
 		else if (line == "burn spud")
 		{
-			functions[funcCount].lineEnd	= lineCount;
+			m_functions[funcCount].lineEnd	= lineCount;
 			++funcCount;
 		}
 	}
-	m_file.close();
+	file.close();
 }
 
-void Script::getLines()
+bool Script::getLines()
 {
 	// Open the file
-	m_file.open(m_filepath.c_str());
-	std::string line;
-	int lineCount	= 0;
+	std::ifstream file(m_filepath);
+	if (!file.is_open())
+	{
+		return false;
+	}
 
-	while (m_file.good())
+	std::string line;
+	int lineCount = 0;
+
+	while (file.good())
 	{
 		line.clear();
-		getline(m_file, line);
-		lines[lineCount].setLine(line + '\0');
+		std::getline(file, line);
+		m_lines.push_back(line);
 
 		++lineCount;
 	}
-	m_file.close();
+
+	file.close();
+
+	return (m_lines.size() > 0);
 }
 
 bool Script::executeScript()
 {
-	if (m_filepath != "")
+	if (!m_open)
 	{
-		bool skipLine = false;
+		std::cout << "No script file specified.\n";
+		return false;
+	}
 
-		// Yo dawg, I heard you like loops, so we put a loop in your loop so you can loop while you loop
-		for (int lineNum = 0; lineNum < m_numberOfLines; ++lineNum)
+	bool skipLine = false;
+
+	// Yo dawg, I heard you like loops, so we put a loop in your loop so you can loop while you loop
+	for (int lineNum = 0; lineNum < m_lines.size(); ++lineNum)
+	{
+		if (m_lines[lineNum].line()[0] != '\0' && !m_skipToRoasted)// && lines[lineNum].word(0) != "roasted")) // If it's an empty line, just ignore it
 		{
-			if (lines[lineNum].line()[0] != '\0' && !m_skipToRoasted)// && lines[lineNum].word(0) != "roasted")) // If it's an empty line, just ignore it
+			// Check if the script calls a function
+			if (m_lines[lineNum].word(0) == "eat" && !skipLine)
 			{
-				// Check if the script calls a function
-				if (lines[lineNum].word(0) == "eat" && !skipLine)
+				// If there is a lib function with the name, run it. If not, run the script with the same name
+				if (runLibFunction(m_lines[lineNum].word(1)) == 1) // Returns 1 if could not find a lib func with specified name
+					executeFunction(m_lines[lineNum].word(1));
+			}
+			else if (m_lines[lineNum].word(0) == "roast" && m_lines[lineNum].word(1) == "while")
+			{
+				if (interpreter->conditionResult(m_lines[lineNum].word(2), m_lines[lineNum].word(4), m_lines[lineNum].word(3)))
 				{
-					// If there is a lib function with the name, run it. If not, run the script with the same name
-					if (runLibFunction(lines[lineNum].word(1)) == 1) // Returns 1 if could not find a lib func with specified name
-						executeFunction(lines[lineNum].word(1));
-				}
-				else if (lines[lineNum].word(0) == "roast" && lines[lineNum].word(1) == "while")
-				{
-					if (interpreter->conditionResult(lines[lineNum].word(2), lines[lineNum].word(4), lines[lineNum].word(3)))
-					{
-						m_inLoop	= true;
-						m_loopLine	= lineNum;
-					}
-					else
-					{
-						m_skipToRoasted	= true;
-					}
-				}
-				else if (lines[lineNum].word(0) == "roasted" && m_inLoop)
-				{
-					m_inLoop	= false;
-					lineNum		= m_loopLine - 1;
+					m_inLoop	= true;
+					m_loopLine	= lineNum;
 				}
 				else
 				{
-					if (lines[lineNum].word(0) == "spud")
-						skipLine	= true;
-
-					if (!skipLine)
-					{
-						// If the interpreter returns zero, exit the program (means a call to "divide by zero")
-						if (interpreter->interpretLine(lines[lineNum]) == 0)
-							break;
-					}
-
-					if (lines[lineNum].word(0) == "burn")
-						skipLine	= false;
+					m_skipToRoasted	= true;
 				}
 			}
-			else if (m_skipToRoasted && lines[lineNum].word(0) == "roasted")
+			else if (m_lines[lineNum].word(0) == "roasted" && m_inLoop)
 			{
-				m_skipToRoasted	= false;
+				m_inLoop	= false;
+				lineNum		= m_loopLine - 1;
+			}
+			else
+			{
+				if (m_lines[lineNum].word(0) == "spud")
+					skipLine	= true;
+
+				if (!skipLine)
+				{
+					// If the interpreter returns zero, exit the program (means a call to "divide by zero")
+					if (interpreter->interpretLine(m_lines[lineNum]) == 0)
+						break;
+				}
+
+				if (m_lines[lineNum].word(0) == "burn")
+					skipLine	= false;
 			}
 		}
-	}
-	else
-	{
-		std::cout << "No script file specified.\n";
+		else if (m_skipToRoasted && m_lines[lineNum].word(0) == "roasted")
+		{
+			m_skipToRoasted	= false;
+		}
 	}
 
 	return true;
@@ -199,9 +168,9 @@ bool Script::executeScript()
 
 int Script::executeFunction(std::string a_funcName)
 {
-	for (int i=0; i < m_numberOfFunctions; ++i) // Get the function it called
+	for (int i = 0; i < m_functions.size(); ++i) // Get the function it called
 	{
-		if (functions[i].getName() == a_funcName)
+		if (m_functions[i].getName() == a_funcName)
 		{
 			Line inlineCommand;
 			inlineCommand.setLine("ham barf");
@@ -209,15 +178,15 @@ int Script::executeFunction(std::string a_funcName)
 			// Create new scope for function
 			interpreter->interpretLine(inlineCommand);
 			// Execute each line of the function, then break
-			for (int funcLineNum=functions[i].lineStart; funcLineNum < functions[i].lineEnd - 1; ++funcLineNum)
+			for (int funcLineNum = m_functions[i].lineStart; funcLineNum < m_functions[i].lineEnd - 1; ++funcLineNum)
 			{
-				if (lines[funcLineNum].word(0) == "eat")
+				if (m_lines[funcLineNum].word(0) == "eat")
 				{
 					// Protect against a stack overflow.. kinda
 					if (m_recursionDepth < 5)
 					{
 						++m_recursionDepth;
-						executeFunction(lines[funcLineNum].word(1));
+						executeFunction(m_lines[funcLineNum].word(1));
 						--m_recursionDepth;
 					}
 					else
@@ -226,7 +195,9 @@ int Script::executeFunction(std::string a_funcName)
 					}
 				}
 				else
-					interpreter->interpretLine(lines[funcLineNum]);
+				{
+					interpreter->interpretLine(m_lines[funcLineNum]);
+				}
 			}
 			// End the scope
 			inlineCommand.setLine("ham eat");
@@ -240,26 +211,25 @@ int Script::executeFunction(std::string a_funcName)
 
 
 // Trelscript as a lib implementation
-
 void Script::addLibFunction(std::string a_funcName, void(*a_func)())
 {
-	for (int i=0; i < maxLibFuncs; ++i)
+	for (int i = 0; i < m_libFuncs.size(); ++i)
 	{
-		if (libFunctions->m_pFunction == nullptr)
+		if (m_libFuncs[i].m_pFunction == nullptr)
 		{
-			libFunctions->setName(a_funcName);
-			libFunctions->setFuncPtr(a_func);
+			m_libFuncs[i].setName(a_funcName);
+			m_libFuncs[i].setFuncPtr(a_func);
 		}
 	}
 }
 
 int Script::runLibFunction(std::string a_funcName)
 {
-	for (int i=0; i < maxLibFuncs; ++i)
+	for (int i = 0; i < m_libFuncs.size(); ++i)
 	{
-		if (libFunctions[i].getName() == a_funcName)
+		if (m_libFuncs[i].getName() == a_funcName)
 		{
-			libFunctions[i].runFunc();
+			m_libFuncs[i].runFunc();
 			return 0;
 		}
 	}
