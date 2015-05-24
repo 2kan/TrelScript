@@ -98,7 +98,7 @@ void Line::getWords()
 		}
 	}
 	
-	size_t len = --i - lastIndex;
+	size_t len = i - lastIndex;
 	if (len > 0)
 	{
 		std::string word = m_line.substr(lastIndex, len);

@@ -142,29 +142,32 @@ int Interpreter::interpretLine(Line l)
 	return 1;
 }
 
-bool Interpreter::conditionResult(std::string lhs, std::string rhs, std::string comparator)
+bool Interpreter::conditionResult(std::string a_lhs, std::string a_rhs, std::string comparator)
 {
 	//TODO: The comparison operators make too much sense and must be potatified.
 
-	if (lhs[0] == '@')
-		lhs	= getVarValue(lhs);
-	if (rhs[0] == '@')
-		rhs	= getVarValue(rhs);
+	int lhs = 0;
+	int rhs = 0;
+
+	if (a_lhs[0] == '@')
+		lhs = parseInt(getVarValue(a_lhs));
+	if (a_rhs[0] == '@')
+		rhs = parseInt(getVarValue(a_rhs));
 
 	// Let's not use really long ternary operators to do this because that's potato and Tom's a shithead.
 	if (comparator == "lt")
-		return (parseInt(lhs) < parseInt(rhs));
+		return (lhs < rhs);
 	else if (comparator == "gt")
-		return (parseInt(lhs) > parseInt(rhs));
+		return (lhs > rhs);
 	else if (comparator == "same")
-		return (parseInt(lhs) == parseInt(rhs));
+		return (lhs == rhs);
 	else if (comparator == "notsame")
-		return (parseInt(lhs) == parseInt(rhs));
+		return (lhs == rhs);
 		// Haha compiler specific nonstandard extensions.
 	else if (comparator == "ltsame")
-		return (parseInt(lhs) <= parseInt(rhs));
+		return (lhs <= rhs);
 	else if (comparator == "gtsame")
-		return (parseInt(lhs) >= parseInt(rhs));
+		return (lhs >= rhs);
 	else
 		return false; // If all else fails... and who needs bad syntax handling anyway?
 }
@@ -208,13 +211,13 @@ std::string Interpreter::setVar(Line a_l)
 		int rhs	= atoi((a_l.word(6)[0] == '@') ? getVarValue(a_l.word(6)).c_str() : a_l.word(6).c_str());
 
 		if (a_l.word(5) == "add")
-			return std::to_string(lhs - rhs);
+			return std::to_string(lhs + rhs);
 		else if (a_l.word(5) == "sub")
 			return std::to_string(lhs - rhs);
 		else if (a_l.word(5) == "mul")
-			return std::to_string(lhs - rhs);
+			return std::to_string(lhs * rhs);
 		else if (a_l.word(5) == "div")
-			return std::to_string(lhs - rhs);
+			return std::to_string(lhs / rhs);
 		else
 			return "";
 	}
