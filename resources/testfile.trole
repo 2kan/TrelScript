@@ -1,11 +1,12 @@
 #trole bugs
 
-potato left is 17
-potato right is 20
+potato left is 0
+potato right is 420
 
-roast while @left gt @right
+roast while @left lt @right
 	trel smoke weed erryday
 	potato left is num @left add 1
+	trel @left
 roasted
 
 divide by zero

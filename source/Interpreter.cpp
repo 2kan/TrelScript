@@ -48,7 +48,7 @@ int Interpreter::interpretLine(Line l)
 
 	if (lineNumber == 1)
 	{
-		if (l.wordCount() == 2 && l.word(0) == "#trole" && l.word(1) == "bugs")
+		if (l.wordCount() == 2 && l.word(0) == "trole" && l.word(1) == "bugs")
 		{
 			debugMode = true;
 			return 1;
