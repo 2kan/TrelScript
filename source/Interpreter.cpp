@@ -5,7 +5,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+	http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -39,12 +39,12 @@ Interpreter::Interpreter()
 	scope[1]	= new Scope(2);
 
 	curScope	= 1;
-	
+
 }
 
 Interpreter::~Interpreter()
 {
-	delete[] *scope;
+	delete[] * scope;
 }
 
 int Interpreter::interpretLine(Line l)
@@ -52,9 +52,9 @@ int Interpreter::interpretLine(Line l)
 	bool interpreted	= false;
 	++lineNumber;
 
-	if(lineNumber == 1)
+	if (lineNumber == 1)
 	{
-		if(l.numWords == 2 && l.words[0] == "trole" && l.words[1] == "bugs")
+		if (l.numWords == 2 && l.words[0] == "trole" && l.words[1] == "bugs")
 		{
 			debugMode	= true;
 			return 1;
@@ -62,47 +62,47 @@ int Interpreter::interpretLine(Line l)
 	}
 
 	// Only interpret the line if it isn't a comment
-	if(l.line[0] != '#' && runNextLine)
+	if (l.line[0] != '#' && runNextLine)
 	{
 		parseVarNames(l);
-		
-		if(l.words[0] == "divide" && l.words[1] == "by" && l.words[2] == "zero")
+
+		if (l.words[0] == "divide" && l.words[1] == "by" && l.words[2] == "zero")
 		{
 			return 0;
 		}
 
 
-		if(l.words[0] == "trel")
+		if (l.words[0] == "trel")
 		{
-			for(int i=1; i<l.numWords; ++i)
+			for (int i=1; i < l.numWords; ++i)
 			{
 				cout << l.words[i] << " ";
 			}
 			cout << endl;
 		}
-		else if(l.words[0] == "ham")
+		else if (l.words[0] == "ham")
 		{
-			if(l.words[1] == "barf")
+			if (l.words[1] == "barf")
 			{
 				createNewScope();
 				showDebugInfo("Created slice of ham");
 			}
-			else if(l.words[1] == "eat")
+			else if (l.words[1] == "eat")
 			{
 				destroyScope();
 				showDebugInfo("Destroyed ham");
 			}
 		}
-		else if(l.words[0] == "potato")
+		else if (l.words[0] == "potato")
 		{
 			// Check if the variable already exists
 			bool varExists	= false;
-			for(int i=0; i<=curScope; ++i)
+			for (int i=0; i <= curScope; ++i)
 			{
-				for(int k=0; k<=scope[i]->varCount; ++k)
+				for (int k=0; k <= scope[i]->varCount; ++k)
 				{
 					// If variable already exists, update the value
-					if(l.words[1] == scope[i]->vars[k].name)
+					if (l.words[1] == scope[i]->vars[k].name)
 					{
 						scope[i]->vars[k].value	= setVar(l);
 						showDebugInfo("Updated variable '" + scope[i]->vars[k].name + "'to new value '" + scope[i]->vars[k].value);
@@ -110,8 +110,8 @@ int Interpreter::interpretLine(Line l)
 					}
 				}
 			}
-			
-			if(!varExists)
+
+			if (!varExists)
 			{
 				int vcount	= scope[curScope]->varCount;
 				scope[curScope]->vars[vcount].name	= l.words[1];
@@ -120,21 +120,21 @@ int Interpreter::interpretLine(Line l)
 				++scope[curScope]->varCount;
 			}
 		}
-		else if((l.words[0] == "same" || l.words[0] == "notsame") && l.numWords >= 3)
+		else if ((l.words[0] == "same" || l.words[0] == "notsame") && l.numWords >= 3)
 		{
-			if(l.words[0] == "same" && l.words[1] != l.words[2])
+			if (l.words[0] == "same" && l.words[1] != l.words[2])
 				runNextLine	= false;
-			else if(l.words[0] == "notsame" && l.words[1] == l.words[2])
+			else if (l.words[0] == "notsame" && l.words[1] == l.words[2])
 				runNextLine	= false;
 		}
-		else if(l.words[0] == "roast" && l.words[1] == "while")
+		else if (l.words[0] == "roast" && l.words[1] == "while")
 		{
 		}
 
 		interpreted	= true;
 	}
 
-	if(!interpreted && !runNextLine && l.line[0] != '#')
+	if (!interpreted && !runNextLine && l.line[0] != '#')
 	{
 		runNextLine	= true;
 	}
@@ -145,9 +145,9 @@ int Interpreter::interpretLine(Line l)
 
 bool Interpreter::conditionResult(std::string lhs, std::string rhs, std::string comparator)
 {
-	if(lhs[0] == '@')
+	if (lhs[0] == '@')
 		lhs	= getVarValue(lhs);
-	if(rhs[0] == '@')
+	if (rhs[0] == '@')
 		rhs	= getVarValue(rhs);
 
 	// Let's use a really long ternary operator becuase potato
@@ -156,9 +156,9 @@ bool Interpreter::conditionResult(std::string lhs, std::string rhs, std::string 
 
 void Interpreter::parseVarNames(Line &l)
 {
-	for(int i=0; i<l.numWords; ++i)
+	for (int i=0; i < l.numWords; ++i)
 	{
-		if(l.words[i][0] == '@')
+		if (l.words[i][0] == '@')
 		{
 			l.words[i]	= getVarValue(l.words[i]);
 		}
@@ -169,15 +169,15 @@ string Interpreter::getVarValue(string varName)
 {
 	string at	= "@";
 
-	if(varName == at + "seeds")
+	if (varName == at + "seeds")
 		return getInput();
 	else
 	{
-		for(int i=0; i<=curScope; ++i)
+		for (int i=0; i <= curScope; ++i)
 		{
-			for(int k=0; k<=scope[i]->varCount; ++k)
+			for (int k=0; k <= scope[i]->varCount; ++k)
 			{
-				if(at + scope[i]->vars[k].name == varName)
+				if (at + scope[i]->vars[k].name == varName)
 					return scope[i]->vars[k].value;
 			}
 		}
@@ -188,18 +188,18 @@ string Interpreter::getVarValue(string varName)
 
 string Interpreter::setVar(Line a_l)
 {
-	if(a_l.numWords == 7 && a_l.words[3] == "num")
+	if (a_l.numWords == 7 && a_l.words[3] == "num")
 	{
 		int lhs	= atoi((a_l.words[4][0] == '@') ? getVarValue(a_l.words[4]).c_str() : a_l.words[4].c_str());
 		int rhs	= atoi((a_l.words[6][0] == '@') ? getVarValue(a_l.words[6]).c_str() : a_l.words[6].c_str());
 
 		if (a_l.words[5] == "add")
 			return std::to_string(lhs - rhs);
-		else if(a_l.words[5] == "sub")
+		else if (a_l.words[5] == "sub")
 			return std::to_string(lhs - rhs);
-		else if(a_l.words[5] == "mul")
+		else if (a_l.words[5] == "mul")
 			return std::to_string(lhs - rhs);
-		else if(a_l.words[5] == "div")
+		else if (a_l.words[5] == "div")
 			return std::to_string(lhs - rhs);
 	}
 	else
@@ -218,7 +218,7 @@ string Interpreter::getInput()
 
 void Interpreter::showDebugInfo(string a_info)
 {
-	if(debugMode)
+	if (debugMode)
 		cout << a_info << endl;
 }
 
@@ -226,9 +226,9 @@ void Interpreter::getScopedVars(Scope *returnable)
 {
 	int count	= 0;
 
-	for(int i=0; i<curScope; ++i)
+	for (int i=0; i < curScope; ++i)
 	{
-		for(int k=0; k<scope[i]->varCount; ++i)
+		for (int k=0; k < scope[i]->varCount; ++i)
 		{
 			returnable->vars[count]	= scope[i]->vars[k];
 			++count;
@@ -244,7 +244,7 @@ void Interpreter::createNewScope()
 
 void Interpreter::destroyScope()
 {
-	if(curScope > 0)
+	if (curScope > 0)
 	{
 		//delete scope[curScope];
 		--curScope;

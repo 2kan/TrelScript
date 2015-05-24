@@ -5,7 +5,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+	http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -25,11 +25,11 @@ void script_cakes();
 ///////////////////////////////////////////////////////////
 int main(int argc, char **argv)
 {
-	std::string filename	= "testfile.trole";
-	if(argc > 0)
+	std::string filename = "testfile.trole";
+	if (argc > 0)
 	{
-		if(argv[1] != NULL)
-			filename	= argv[1];
+		if (argv[1] != NULL)
+			filename = argv[1];
 	}
 
 	TrelScript *ts	= new TrelScript(filename);

@@ -5,7 +5,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+	http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,15 +21,15 @@ Function::Function()
 {
 	m_pFunction	= NULL;
 }
-	
-void Function::setFuncPtr(void (*a_pFunc)())
+
+void Function::setFuncPtr(void(*a_pFunc)())
 {
 	m_pFunction	= a_pFunc;
 }
 
 void Function::setName(std::string a_name)
 {
-	m_name	= a_name;
+	m_name = a_name;
 }
 
 std::string Function::getName()

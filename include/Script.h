@@ -1,3 +1,19 @@
+/*
+Copyright 2015 TrelScript maintainers
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+	http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
 #ifndef __SCRIPT_H__
 #define __SCRIPT_H__
 
@@ -14,7 +30,7 @@ public:
 	~Script();
 
 	bool	executeScript();
-	void	addLibFunction(std::string a_funcName, void (*a_func)());
+	void	addLibFunction(std::string a_funcName, void(*a_func)());
 
 private:
 	void	setConfig(std::string a_settingName, std::string a_settingValue);
@@ -22,14 +38,14 @@ private:
 	void	setFunctions();
 	void	getLines();
 	int		executeFunction(std::string a_funcName);
-	
-	
+
+
 	// Start of trelscript as a lib implementation
 	int		runLibFunction(std::string a_funcName);
-	
+
 	Function	*libFunctions;
 	int			maxLibFuncs;
-	
+
 
 	Interpreter *interpreter;
 	Function	*functions;
