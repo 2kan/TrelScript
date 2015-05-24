@@ -17,7 +17,6 @@ limitations under the License.
 #include <iostream>
 #include <string>
 #include "Line.h"
-#include "main.h"
 
 using namespace std;
 

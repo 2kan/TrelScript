@@ -201,6 +201,8 @@ string Interpreter::setVar(Line a_l)
 			return std::to_string(lhs - rhs);
 		else if (a_l.words[5] == "div")
 			return std::to_string(lhs - rhs);
+		else
+			return "";
 	}
 	else
 	{

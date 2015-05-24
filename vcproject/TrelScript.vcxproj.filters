@@ -47,9 +47,6 @@
     <ClInclude Include="..\include\Line.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\main.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\include\Scope.h">
       <Filter>Header Files</Filter>
     </ClInclude>

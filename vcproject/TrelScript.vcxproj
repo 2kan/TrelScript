@@ -85,7 +85,6 @@
     <ClInclude Include="..\include\Function.h" />
     <ClInclude Include="..\include\Interpreter.h" />
     <ClInclude Include="..\include\Line.h" />
-    <ClInclude Include="..\include\main.h" />
     <ClInclude Include="..\include\Scope.h" />
     <ClInclude Include="..\include\Script.h" />
     <ClInclude Include="..\include\TrelScript.h" />
