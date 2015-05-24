@@ -245,7 +245,7 @@ void Script::addLibFunction(std::string a_funcName, void(*a_func)())
 {
 	for (int i=0; i < maxLibFuncs; ++i)
 	{
-		if (libFunctions->m_pFunction == NULL)
+		if (libFunctions->m_pFunction == nullptr)
 		{
 			libFunctions->setName(a_funcName);
 			libFunctions->setFuncPtr(a_func);

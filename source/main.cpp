@@ -28,7 +28,7 @@ int main(int argc, char **argv)
 	std::string filename = "testfile.trole";
 	if (argc > 0)
 	{
-		if (argv[1] != NULL)
+		if (argv[1] != nullptr)
 			filename = argv[1];
 	}
 

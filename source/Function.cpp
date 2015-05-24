@@ -19,7 +19,7 @@ limitations under the License.
 
 Function::Function()
 {
-	m_pFunction	= NULL;
+	m_pFunction	= nullptr;
 }
 
 void Function::setFuncPtr(void(*a_pFunc)())
