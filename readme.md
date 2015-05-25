@@ -1,3 +1,4 @@
+![haym](documentation/logo.png)
 Trel Script
 --
 
