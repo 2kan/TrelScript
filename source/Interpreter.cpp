@@ -161,7 +161,7 @@ bool Interpreter::conditionResult(std::string a_lhs, std::string a_rhs, std::str
 	else if (comparator == "same")
 		return (lhs == rhs);
 	else if (comparator == "notsame")
-		return (lhs == rhs);
+		return (lhs != rhs);
 		// Haha compiler specific nonstandard extensions.
 	else if (comparator == "ltsame")
 		return (lhs <= rhs);
